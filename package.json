@@ -11,7 +11,7 @@
     "react-scripts": "3.4.0"
   },
   "scripts": {
-    "start:server": "DEBUG=server:* node ./server/bin/www",
+    "start:server": "npm run --prefix server start",
     "start:client": "react-scripts start",
     "start": "npm run start:server & npm run start:client",
     "build": "react-scripts build",
