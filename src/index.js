@@ -4,7 +4,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import io from 'socket.io-client';
 
-const socket = io(process.env.SERVER || 'http://localhost:5000');
+const socket = io(process.env.API_URL || 'http://localhost:3001');
 
 socket.on('connect', onConnect);
 
