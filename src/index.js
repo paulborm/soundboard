@@ -2,6 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import io from 'socket.io-client';
+
+const socket = io(process.env.SERVER || 'http://localhost:5000');
+
+socket.on('connect', onConnect);
+
+function onConnect(){
+  console.log('connect ' + socket.id);
+}
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
