@@ -33,7 +33,7 @@ io.on("connection", socket => {
   io.emit("user", { amount: state.users.length });
 
   socket.on("sound", data => {
-    console.log("[EVENT: sound]", data.name);
+    console.log("[EVENT: sound]", data.sound.name);
     socket.broadcast.emit("sound", { ...data.sound });
 
     // Not currently needed. Save for later.
