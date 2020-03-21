@@ -4,7 +4,7 @@ import io from "socket.io-client";
 export const SocketContext = createContext();
 
 export const SocketProvider = ({ children }) => {
-  const socket = io(process.env.API_URL || "http://localhost:3001");
+  const socket = io(process.env.REACT_APP_API_URL);
 
   return (
     <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>

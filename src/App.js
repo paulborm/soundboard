@@ -1,73 +1,59 @@
 import React, { useState, useEffect } from "react";
-import useSocket from "./hooks/useSocket";
-
-async function playAudio(path) {
-  try {
-    const audio = new Audio();
-    audio.src = path;
-    await audio.play();
-  } catch (error) {
-    console.error("[AUTOPLAY-ERROR]", error);
-  }
-}
-
-const createBase64String = (type, chunks) => {
-  const string = `data:${type};base64,${window.btoa(chunks)}`;
-  return string;
-};
+import { useSounds, useSockets } from "./hooks";
+import SoundItem from "./components/SoundItem";
+import { playAudio } from "./helpers";
 
 function App() {
-  const socket = useSocket();
-  const [userAmount, setUserAmount] = useState(null);
+  const socket = useSockets();
+  const { status: soundsStatus, data: sounds } = useSounds();
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const handleConnectEvent = () => {
-      console.log("connected", socket.id);
-    };
-
     const handleUserEvent = ({ amount }) => {
-      console.log("user event");
-      setUserAmount(amount);
+      console.log("[EVENT: user]");
+      setUser(amount);
     };
 
-    const handleSoundEvent = ({ chunk }) => {
-      console.log("sound event");
-      const audioChunks = [];
-      audioChunks.push(chunk);
-      const audioSrc = createBase64String("audio/mpeg", audioChunks);
-      playAudio(audioSrc);
+    const handleSoundEvent = ({ name, audio }) => {
+      console.log(`[EVENT: sound] Playing ${name}`);
+      playAudio(audio.src);
     };
 
-    handleConnectEvent();
-
-    socket.on("connect", handleConnectEvent);
     socket.on("user", handleUserEvent);
     socket.on("sound", handleSoundEvent);
 
     return () => {
-      socket.off("connect");
-      socket.off("user");
-      socket.off("sound");
+      socket.off("user", handleUserEvent);
+      socket.on("sound", handleSoundEvent);
     };
   }, [socket]);
 
-  function handleOnClickStream(id) {
-    console.log("handleOnClickStream", id);
-    socket.emit("sound", { soundId: id });
-  }
+  const handleOnPlay = event => {
+    const sound = sounds.find(({ id }) => id === event.id);
+    socket.emit("sound", { sound });
+  };
 
   return (
     <div className="App">
-      <h1>Hello Client!</h1>
-      <p>{userAmount} User connected</p>
-
-      <button type="button" onClick={() => handleOnClickStream("boing")}>
-        Stream Boing
-      </button>
-
-      <button type="button" onClick={() => handleOnClickStream("fuck")}>
-        Stream Fuck
-      </button>
+      <p>Connected User: {user}</p>
+      {soundsStatus === "success" &&
+        sounds.map(({ id, name, audio, image }) => (
+          <SoundItem
+            key={id}
+            id={id}
+            name={name}
+            audio={audio}
+            image={image}
+            onPlay={handleOnPlay}
+          />
+        ))}
+      {soundsStatus === "loading" && <p>Loading Sounds...</p>}
+      {soundsStatus === "error" && (
+        <p>
+          Error: Something went wrong while loading the sounds. Please try
+          again.
+        </p>
+      )}
     </div>
   );
 }

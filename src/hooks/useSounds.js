@@ -33,7 +33,7 @@ const useSounds = () => {
 
   useEffect(() => {
     dispath({ type: "loading" });
-    fetch("http://localhost:3001/api/sounds")
+    fetch(`${process.env.REACT_APP_API_URL}/api/sounds`)
       .then(response => response.json())
       .then(json => {
         dispath({ type: "success", payload: json });

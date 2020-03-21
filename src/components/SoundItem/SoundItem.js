@@ -1,37 +1,22 @@
-import React, { useRef } from "react";
+import React from "react";
+import { playAudio } from "../../helpers";
 
-const SoundItem = ({ name, audio, image, onClickPlay, onPlay, ...other }) => {
-  const audioRef = useRef(null);
-
-  const handleOnClickPlay = event => {
-    event.preventDefault();
-    if (!onClickPlay) {
-      return;
-    }
-    audioRef.current.play();
-    onClickPlay({ ref: audioRef.current, event });
-  };
-
+const SoundItem = ({ id, name, audio, image, onPlay }) => {
   const handleOnPlay = event => {
+    event.preventDefault();
     if (!onPlay) {
       return;
     }
-    onClickPlay({ id: audio.id, ref: audioRef.current, event });
+    playAudio(audio.src);
+    onPlay({ id });
   };
 
   return (
     <figure>
-      <img src={image.src} alt={image.alt} />
-      <audio
-        ref={audioRef}
-        controls={false}
-        src={audio.src}
-        onPlay={handleOnPlay}
-        {...other}
-      />
+      <img src={image.src} alt={image.alt || image.name} />
       <figcaption>
         {name}
-        <button type="button" onClick={handleOnClickPlay}>
+        <button type="button" onClick={handleOnPlay}>
           Play
         </button>
       </figcaption>
