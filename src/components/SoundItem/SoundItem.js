@@ -15,12 +15,13 @@ const Wrapper = styled.figure`
   outline-color: blue;
   outline-style: dotted;
   outline-width: 0;
+  outline-offset: 2px;
 
   &:focus {
     outline-width: 4px;
 
     @media (min-width: 1024px) {
-      outline-width: 8px;
+      outline-width: 6px;
     }
   }
 
@@ -97,16 +98,6 @@ const Play = styled.button`
     border: 0;
     padding: 0;
   }
-
-  /* &::before {
-    content: "";
-    display: block;
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-  } */
 `;
 
 const PlayIcon = styled.span`
