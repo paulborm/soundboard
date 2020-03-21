@@ -3,23 +3,58 @@ const router = express.Router();
 
 const data = [
   {
-    id: "boing",
-    name: "Boing",
-    fileName: "boing.mp3",
-    path: `${process.env.BASE_URL}/static/sounds/boing.mp3`,
-    thumbnail: {
-      fileName: "thumbnail-boing.jpg",
-      path: `${process.env.BASE_URL}/static/images/thumbnail-cage-01.jpg`
+    id: "Rb3vNLwuv6410bled1n9P0qm",
+    name: "Fuck",
+    audio: {
+      src: `${process.env.BASE_URL}/static/sounds/fuck.mp3`
+    },
+    image: {
+      alt: "",
+      src: `${process.env.BASE_URL}/static/images/puppy.jpg`
     }
   },
   {
-    id: "fuck",
-    name: "Fuck",
-    fileName: "fuck.mp3",
-    path: `${process.env.BASE_URL}/static/sounds/fuck.mp3`,
-    thumbnail: {
-      fileName: "thumbnail-boing.jpg",
-      path: `${process.env.BASE_URL}/static/images/thumbnail-cage-02.jpg`
+    id: "61w3P9vmsdiBgwd7865dqEoP",
+    name: "Ha Ha",
+    audio: {
+      src: `${process.env.BASE_URL}/static/sounds/ostrich-laugh.mp3`
+    },
+    image: {
+      alt: "",
+      src: `${process.env.BASE_URL}/static/images/ostrich.jpg`
+    }
+  },
+  {
+    id: "0e2q7Ou27bPkti6kMp5l2Ird",
+    name: "Alles bleibt wie es ist",
+    audio: {
+      src: `${process.env.BASE_URL}/static/sounds/alles-bleibt-wie-es-ist.mp3`
+    },
+    image: {
+      alt: "",
+      src: `${process.env.BASE_URL}/static/images/andreas.jpg`
+    }
+  },
+  {
+    id: "bJ8pBvdC2oxz028t1ua5mw0W",
+    name: "NEIN NEIN NEIN",
+    audio: {
+      src: `${process.env.BASE_URL}/static/sounds/nein-nein-nein.mp3`
+    },
+    image: {
+      alt: "",
+      src: `${process.env.BASE_URL}/static/images/hitler.jpg`
+    }
+  },
+  {
+    id: "j5rycgGx7j67Z64xykh2w6JT",
+    name: "Kannst kotzen gehen",
+    audio: {
+      src: `${process.env.BASE_URL}/static/sounds/kannst-kotzen-gehen.mp3`
+    },
+    image: {
+      alt: "",
+      src: `${process.env.BASE_URL}/static/images/sasha.jpg`
     }
   }
 ];
