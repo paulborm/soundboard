@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
+import styled from "styled-components";
 import { useSounds, useSockets } from "./hooks";
 import SoundItem from "./components/SoundItem";
 import { playAudio } from "./helpers";
+
+const SoundItems = styled.div`
+  display: grid;
+  grid-gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+`;
 
 function App() {
   const socket = useSockets();
@@ -36,17 +43,21 @@ function App() {
   return (
     <div className="App">
       <p>Connected User: {user}</p>
-      {soundsStatus === "success" &&
-        sounds.map(({ id, name, audio, image }) => (
-          <SoundItem
-            key={id}
-            id={id}
-            name={name}
-            audio={audio}
-            image={image}
-            onPlay={handleOnPlay}
-          />
-        ))}
+
+      {soundsStatus === "success" && (
+        <SoundItems>
+          {sounds.map(({ id, name, audio, image }) => (
+            <SoundItem
+              key={id}
+              id={id}
+              name={name}
+              audio={audio}
+              image={image}
+              onPlay={handleOnPlay}
+            />
+          ))}
+        </SoundItems>
+      )}
       {soundsStatus === "loading" && <p>Loading Sounds...</p>}
       {soundsStatus === "error" && (
         <p>
