@@ -1,4 +1,5 @@
-import React, { useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
+import { Howl } from "howler";
 import styled from "styled-components";
 
 const Wrapper = styled.figure`
@@ -111,11 +112,32 @@ const PlayIcon = styled.span`
 `;
 
 const SoundItem = ({ id, name, audio, image, onPlay }) => {
-  const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
+
+  // FIXME: Playback is only working if device is NOT muted (iOS)
+  const [sound] = useState(
+    new Howl({
+      src: audio.src,
+      preload: true
+    })
+  );
+
+  useEffect(() => {
+    const handlePlay = () => setIsPlaying(sound.playing());
+    const handleEnd = () => setIsPlaying(sound.playing());
+
+    sound.on("play", handlePlay);
+    sound.on("end", handleEnd);
+
+    return () => {
+      sound.off("play", handlePlay);
+      sound.off("end", handleEnd);
+    };
+  }, [sound]);
 
   const handleKeyPress = event => {
     event.preventDefault();
+    // Keys: [Space|Return]
     if (event.which === 13 || event.which === 32) {
       handleOnPlay();
     }
@@ -123,14 +145,11 @@ const SoundItem = ({ id, name, audio, image, onPlay }) => {
   };
 
   const handleOnPlay = event => {
-    event && event.preventDefault();
-
-    if (!onPlay) {
-      return;
+    event.preventDefault();
+    if (onPlay) {
+      onPlay({ id });
     }
-    audioRef.current.currentTime = 0;
-    audioRef.current.play();
-    onPlay({ id });
+    sound.play();
   };
 
   return (
@@ -143,18 +162,12 @@ const SoundItem = ({ id, name, audio, image, onPlay }) => {
       <ImageWrapper>
         <Image src={image.src} alt={image.alt || image.name} />
       </ImageWrapper>
-      <audio
-        ref={audioRef}
-        src={audio.src}
-        onPlaying={() => setIsPlaying(true)}
-        onEnded={() => setIsPlaying(false)}
-      />
       <Caption>
         <Name>{name}</Name>
         <Play type="button" onClick={handleOnPlay}>
           <PlayIcon role="img" aria-label="hidden">
             {isPlaying ? "🔊" : "🔈"}
-            {/* 🔇 */}
+            {/* TODO: icon for muted/error state: 🔇 */}
           </PlayIcon>
         </Play>
       </Caption>
