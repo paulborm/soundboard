@@ -1,0 +1,60 @@
+const path = require("path");
+const express = require("express");
+const http = require("http");
+// const socketio = require("socket.io");
+// const fs = require("fs");
+const app = express();
+const server = http.createServer(app);
+// const io = socketio(server);
+const PORT = process.env.PORT || "3001";
+
+// Serve static files
+app.use(express.static(path.join(__dirname, "public")));
+
+// Routes
+app.use("/api", require("./routes/api"));
+app.use("/", require("./routes/index"));
+
+// let state = {
+//   users: []
+// };
+
+// io.on("connection", socket => {
+//   console.log(`a user connected: ${socket.id}`);
+
+//   state = {
+//     ...state,
+//     users: [...state.users, socket.id]
+//   };
+
+//   io.emit("user", { amount: state.users.length });
+
+//   socket.on("sound", data => {
+//     console.log("sound", data);
+//     const sound = sounds.filter(({ id }) => id === data.soundId)[0];
+//     const audioReadStream = fs.createReadStream(sound.path, {
+//       encoding: "binary",
+//       highWaterMark: 128 * 1024
+//     });
+
+//     audioReadStream.on("data", function(chunk) {
+//       console.log(`Streaming sound: ${data.soundId}`);
+//       io.emit("sound", { chunk });
+//     });
+//   });
+
+//   socket.on("disconnect", () => {
+//     console.log(`user disconnected: ${socket.id}`);
+//     const filteredUsers = state.users.filter(user => user !== socket.id);
+//     state = {
+//       ...state,
+//       users: [...filteredUsers]
+//     };
+//     io.emit("user", { amount: state.users.length });
+//   });
+// });
+
+// Run server and listen on port: `PORT`
+server.listen(PORT, () => {
+  console.log(`listening on *:${PORT}`);
+});
