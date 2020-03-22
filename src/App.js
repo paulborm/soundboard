@@ -7,7 +7,7 @@ import { playAudio } from "./helpers";
 const SoundItems = styled.div`
   display: grid;
   grid-gap: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(196px, 1fr));
 `;
 
 function App() {
