@@ -5,6 +5,9 @@ import SoundItem from "./components/SoundItem";
 import { playAudio } from "./helpers";
 
 const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   margin: 0 auto;
   padding: 8px;
 
@@ -33,6 +36,25 @@ const Label = styled.div`
   border-radius: 4px;
   background-color: #c7cace;
   user-select: none;
+`;
+
+const Main = styled.div`
+  flex: 1 1 auto;
+`;
+
+const Footer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+  padding: 12px 0;
+  width: 100%;
+
+  > a {
+    font-size: 12px;
+    &:not(:last-child) {
+      margin-right: 1em;
+    }
+  }
 `;
 
 function App() {
@@ -73,30 +95,48 @@ function App() {
 
   return (
     <Wrapper className="App">
-      <Label>Connections: {user}</Label>
+      <Main>
+        <Label>Connections: {user}</Label>
 
-      <h2>Default Sounds</h2>
-      {soundsStatus === "success" && (
-        <SoundItems>
-          {sounds.map(({ id, name, audio, image }) => (
-            <SoundItem
-              key={id}
-              id={id}
-              name={name}
-              audio={audio}
-              image={image}
-              onPlay={handleOnPlay}
-            />
-          ))}
-        </SoundItems>
-      )}
-      {soundsStatus === "loading" && <p>Loading Sounds...</p>}
-      {soundsStatus === "error" && (
-        <p>
-          Error: Something went wrong while loading the sounds. Please try
-          again.
-        </p>
-      )}
+        <h2>Default Sounds</h2>
+        {soundsStatus === "success" && (
+          <SoundItems>
+            {sounds.map(({ id, name, audio, image }) => (
+              <SoundItem
+                key={id}
+                id={id}
+                name={name}
+                audio={audio}
+                image={image}
+                onPlay={handleOnPlay}
+              />
+            ))}
+          </SoundItems>
+        )}
+        {soundsStatus === "loading" && <p>Loading Sounds...</p>}
+        {soundsStatus === "error" && (
+          <p>
+            Error: Something went wrong while loading the sounds. Please try
+            again.
+          </p>
+        )}
+      </Main>
+      <Footer>
+        <a
+          href="https://github.com/paulborm/soundboard"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Github
+        </a>
+        <a
+          href="https://www.paulborm.de"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          @paulborm
+        </a>
+      </Footer>
     </Wrapper>
   );
 }
