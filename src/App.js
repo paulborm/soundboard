@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useSounds, useSockets } from "./hooks";
+import { useSounds, useSocket } from "./hooks";
 import SoundItem from "./components/SoundItem";
 import { playAudio } from "./helpers";
 
@@ -11,11 +11,15 @@ const SoundItems = styled.div`
 `;
 
 function App() {
-  const socket = useSockets();
+  const socket = useSocket();
   const { status: soundsStatus, data: sounds } = useSounds();
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+    const handleConnect = () => {
+      console.log(`[EVENT: connect] ${socket.id}`);
+    };
+
     const handleUserEvent = ({ amount }) => {
       console.log("[EVENT: user]");
       setUser(amount);
@@ -26,10 +30,12 @@ function App() {
       playAudio(audio.src);
     };
 
+    socket.on("connect", handleConnect);
     socket.on("user", handleUserEvent);
     socket.on("sound", handleSoundEvent);
 
     return () => {
+      socket.off("connect", handleConnect);
       socket.off("user", handleUserEvent);
       socket.on("sound", handleSoundEvent);
     };
