@@ -4,10 +4,35 @@ import { useSounds, useSocket } from "./hooks";
 import SoundItem from "./components/SoundItem";
 import { playAudio } from "./helpers";
 
+const Wrapper = styled.div`
+  margin: 0 auto;
+  padding: 8px;
+
+  @media (min-width: 1024px) {
+    padding: 16px;
+  }
+`;
+
 const SoundItems = styled.div`
   display: grid;
-  grid-gap: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(196px, 1fr));
+  grid-gap: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(172px, 1fr));
+
+  @media (min-width: 1024px) {
+    grid-gap: 16px;
+  }
+`;
+
+const Label = styled.div`
+  display: inline-block;
+  padding: 0.4em 0.6em;
+  font-size: 12px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: white;
+  border-radius: 4px;
+  background-color: #c7cace;
+  user-select: none;
 `;
 
 function App() {
@@ -47,9 +72,10 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <p>Connected User: {user}</p>
+    <Wrapper className="App">
+      <Label>Connections: {user}</Label>
 
+      <h2>Default Sounds</h2>
       {soundsStatus === "success" && (
         <SoundItems>
           {sounds.map(({ id, name, audio, image }) => (
@@ -71,7 +97,7 @@ function App() {
           again.
         </p>
       )}
-    </div>
+    </Wrapper>
   );
 }
 
