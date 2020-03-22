@@ -56,6 +56,72 @@ const data = [
       alt: "",
       src: `${process.env.BASE_URL}/static/images/sasha.jpg`
     }
+  },
+  {
+    id: "Xas5LXkwR76n10c5ti29no",
+    name: "Alle",
+    audio: {
+      src: `${process.env.BASE_URL}/static/sounds/alle.mp3`
+    },
+    image: {
+      alt: "",
+      src: `${process.env.BASE_URL}/static/images/alle.jpg`
+    }
+  },
+  {
+    id: "bq9l6f0s23BhPaigv4Czq73H",
+    name: "Bullshit",
+    audio: {
+      src: `${process.env.BASE_URL}/static/sounds/bullshit.mp3`
+    },
+    image: {
+      alt: "",
+      src: `${process.env.BASE_URL}/static/images/bullshit.jpg`
+    }
+  },
+  {
+    id: "Nokm40k19fjM95MEd9an8afn",
+    name: "Flex",
+    audio: {
+      src: `${process.env.BASE_URL}/static/sounds/flex.mp3`
+    },
+    image: {
+      alt: "",
+      src: `${process.env.BASE_URL}/static/images/flex.jpg`
+    }
+  },
+  {
+    id: "Hfzc1FW3ba3nzhp6sY9b536d",
+    name: "Mhmm",
+    audio: {
+      src: `${process.env.BASE_URL}/static/sounds/mhmm.mp3`
+    },
+    image: {
+      alt: "",
+      src: `${process.env.BASE_URL}/static/images/mhmm.jpg`
+    }
+  },
+  {
+    id: "Nokm40k19fjM95MEd9an8afn",
+    name: "Mhmm 2",
+    audio: {
+      src: `${process.env.BASE_URL}/static/sounds/mhmm-2.mp3`
+    },
+    image: {
+      alt: "",
+      src: `${process.env.BASE_URL}/static/images/mhmm-2.jpg`
+    }
+  },
+  {
+    id: "8778tTvpZnb7yqZg7ws3W5al",
+    name: "Windows Error",
+    audio: {
+      src: `${process.env.BASE_URL}/static/sounds/windows-xp-error.mp3`
+    },
+    image: {
+      alt: "",
+      src: `${process.env.BASE_URL}/static/images/windows.jpg`
+    }
   }
 ];
 
