@@ -1,5 +1,7 @@
 # WIP: Soundboard
 
+> Annoy your colleagues with amusing sound effects.
+
 ## Image and Audio compression
 
 Audio:
