@@ -152,7 +152,7 @@ const SoundItem = ({ id, name, audio, image, onPlay }) => {
   }, [sound]);
 
   const handleKeyPress = event => {
-    event.preventDefault();
+    event && event.preventDefault();
     // Keys: [Space|Return]
     if (event.which === 13 || event.which === 32) {
       handleOnPlay();
@@ -161,7 +161,7 @@ const SoundItem = ({ id, name, audio, image, onPlay }) => {
   };
 
   const handleOnPlay = event => {
-    event.preventDefault();
+    event && event.preventDefault();
     if (onPlay) {
       onPlay({ id });
     }
