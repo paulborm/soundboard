@@ -7,9 +7,9 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
-    "debug": "~2.6.9",
+    "debug": "^2.6.9",
     "dotenv": "^8.2.0",
-    "express": "~4.16.1",
+    "express": "^4.16.1",
     "socket.io": "^2.3.0"
   }
 }
