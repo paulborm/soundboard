@@ -1,6 +1,6 @@
 # WIP: Soundboard
 
-> Annoy your colleagues with amusing sound effects.
+> Real-Time Soundboard.
 
 ## Image and Audio compression
 
