@@ -167,6 +167,17 @@ const data = [
       src: `${process.env.BASE_URL}/static/images/wow.webp`
     }
   },
+  {
+    id: "GfPVegp3FdaeXrmjfzu87HNs",
+    name: "Fake news",
+    audio: {
+      src: `${process.env.BASE_URL}/static/sounds/you-are-fake-news.mp3`
+    },
+    image: {
+      alt: "",
+      src: `${process.env.BASE_URL}/static/images/you-are-fake-news.jpg`
+    }
+  },
   }
 ];
 
