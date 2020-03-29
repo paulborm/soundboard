@@ -189,6 +189,16 @@ const data = [
       src: `${process.env.BASE_URL}/static/images/noice.jpg`
     }
   },
+  {
+    id: "ErhdWH8gkGRscgs9Lz3MU9qN",
+    name: "doot",
+    audio: {
+      src: `${process.env.BASE_URL}/static/sounds/doot.mp3`
+    },
+    image: {
+      alt: "",
+      src: `${process.env.BASE_URL}/static/images/doot.jpg`
+    }
   }
 ];
 
