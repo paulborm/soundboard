@@ -178,6 +178,17 @@ const data = [
       src: `${process.env.BASE_URL}/static/images/you-are-fake-news.jpg`
     }
   },
+  {
+    id: "xaXanTX2f5En8QQ8HUVp2UmG",
+    name: "Noice",
+    audio: {
+      src: `${process.env.BASE_URL}/static/sounds/noice.mp3`
+    },
+    image: {
+      alt: "",
+      src: `${process.env.BASE_URL}/static/images/noice.jpg`
+    }
+  },
   }
 ];
 
