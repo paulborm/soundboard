@@ -145,6 +145,17 @@ const data = [
       src: `${process.env.BASE_URL}/static/images/damn.jpg`
     }
   },
+  {
+    id: "E34P6HaM2zeKZDBynCQbK2Zd",
+    name: "ohhhhhh",
+    audio: {
+      src: `${process.env.BASE_URL}/static/sounds/ohhhhhh.mp3`
+    },
+    image: {
+      alt: "",
+      src: `${process.env.BASE_URL}/static/images/ohhhhhh.jpg`
+    }
+  },
   }
 ];
 
