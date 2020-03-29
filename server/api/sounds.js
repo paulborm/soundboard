@@ -156,6 +156,17 @@ const data = [
       src: `${process.env.BASE_URL}/static/images/ohhhhhh.jpg`
     }
   },
+  {
+    id: "BAa7BTpwBqmTPzUqKwaZywnP",
+    name: "WOW",
+    audio: {
+      src: `${process.env.BASE_URL}/static/sounds/wow.mp3`
+    },
+    image: {
+      alt: "",
+      src: `${process.env.BASE_URL}/static/images/wow.webp`
+    }
+  },
   }
 ];
 
