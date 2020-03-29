@@ -122,6 +122,18 @@ const data = [
       alt: "",
       src: `${process.env.BASE_URL}/static/images/windows.jpg`
     }
+  },
+  {
+    id: "RRF8ysfsNRQPGpequtwq7RBm",
+    name: "ba dum tss",
+    audio: {
+      src: `${process.env.BASE_URL}/static/sounds/ba-dum-tss.mp3`
+    },
+    image: {
+      alt: "",
+      src: `${process.env.BASE_URL}/static/images/ba-dum-tss.png`
+    }
+  },
   }
 ];
 
