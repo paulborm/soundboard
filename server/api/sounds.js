@@ -131,7 +131,7 @@ const data = [
     },
     image: {
       alt: "",
-      src: `${process.env.BASE_URL}/static/images/ba-dum-tss.png`
+      src: `${process.env.BASE_URL}/static/images/ba-dum-tss.jpg`
     }
   },
   {
@@ -164,7 +164,7 @@ const data = [
     },
     image: {
       alt: "",
-      src: `${process.env.BASE_URL}/static/images/wow.webp`
+      src: `${process.env.BASE_URL}/static/images/wow.jpg`
     }
   },
   {

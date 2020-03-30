@@ -4,6 +4,12 @@
 
 ## Image and Audio compression
 
+Install ffmpeg on MacOS using this command:
+
+```bash
+brew install ffmpeg
+```
+
 Audio:
 
 -ab: Bitrate (something between 32, - 64k)
