@@ -122,6 +122,83 @@ const data = [
       alt: "",
       src: `${process.env.BASE_URL}/static/images/windows.jpg`
     }
+  },
+  {
+    id: "RRF8ysfsNRQPGpequtwq7RBm",
+    name: "ba dum tss",
+    audio: {
+      src: `${process.env.BASE_URL}/static/sounds/ba-dum-tss.mp3`
+    },
+    image: {
+      alt: "",
+      src: `${process.env.BASE_URL}/static/images/ba-dum-tss.jpg`
+    }
+  },
+  {
+    id: "2n3bZaZNNJDZXpbLEtwBapx8",
+    name: "DAMN",
+    audio: {
+      src: `${process.env.BASE_URL}/static/sounds/damn.mp3`
+    },
+    image: {
+      alt: "",
+      src: `${process.env.BASE_URL}/static/images/damn.jpg`
+    }
+  },
+  {
+    id: "E34P6HaM2zeKZDBynCQbK2Zd",
+    name: "ohhhhhh",
+    audio: {
+      src: `${process.env.BASE_URL}/static/sounds/ohhhhhh.mp3`
+    },
+    image: {
+      alt: "",
+      src: `${process.env.BASE_URL}/static/images/ohhhhhh.jpg`
+    }
+  },
+  {
+    id: "BAa7BTpwBqmTPzUqKwaZywnP",
+    name: "WOW",
+    audio: {
+      src: `${process.env.BASE_URL}/static/sounds/wow.mp3`
+    },
+    image: {
+      alt: "",
+      src: `${process.env.BASE_URL}/static/images/wow.jpg`
+    }
+  },
+  {
+    id: "GfPVegp3FdaeXrmjfzu87HNs",
+    name: "Fake news",
+    audio: {
+      src: `${process.env.BASE_URL}/static/sounds/you-are-fake-news.mp3`
+    },
+    image: {
+      alt: "",
+      src: `${process.env.BASE_URL}/static/images/you-are-fake-news.jpg`
+    }
+  },
+  {
+    id: "xaXanTX2f5En8QQ8HUVp2UmG",
+    name: "Noice",
+    audio: {
+      src: `${process.env.BASE_URL}/static/sounds/noice.mp3`
+    },
+    image: {
+      alt: "",
+      src: `${process.env.BASE_URL}/static/images/noice.jpg`
+    }
+  },
+  {
+    id: "ErhdWH8gkGRscgs9Lz3MU9qN",
+    name: "doot",
+    audio: {
+      src: `${process.env.BASE_URL}/static/sounds/doot.mp3`
+    },
+    image: {
+      alt: "",
+      src: `${process.env.BASE_URL}/static/images/doot.jpg`
+    }
   }
 ];
 
