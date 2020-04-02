@@ -129,13 +129,6 @@ function App() {
         >
           Github
         </a>
-        <a
-          href="https://www.paulborm.de"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          @paulborm
-        </a>
       </Footer>
     </Wrapper>
   );
