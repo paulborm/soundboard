@@ -1,6 +1,10 @@
-# WIP: Soundboard
+# Soundboard
 
 > Real-Time Soundboard.
+
+> ⚠️ **Attention:**
+>
+> - `client` has been moved to it's own repository [soundboard-client](https://github.com/paulborm/soundboard-client)
 
 ## Image and Audio compression
 
@@ -18,9 +22,8 @@ Audio:
 ffmpeg -i input_file.mp3 -ab 48k  output_file.mp3
 ```
 
-
 ## How to set up
 
 ### Basics
 
-Rename all files calles ``.env.dist`` to ``.env``
+Rename all files calles `.env.dist` to `.env`
