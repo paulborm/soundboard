@@ -15,8 +15,12 @@
 			Object.defineProperty(self, "sb", {
 				writable: false,
 				value: {
-					SOCKET_URL: isDev() ? "ws://localhost:3001/ws" : "",
-					STATIC_ASSETS_URL: isDev() ? "http://localhost:3002" : "",
+					SOCKET_URL: isDev()
+						? "ws://localhost:3001/ws"
+						: "https://pb-soundboard-backend.deno.dev/ws",
+					STATIC_ASSETS_URL: isDev()
+						? "http://localhost:3002"
+						: "https://paulborm.github.io/soundboard/static",
 					debug: false,
 				},
 			});
