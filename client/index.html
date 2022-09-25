@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="favicon.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="theme-color" content="#000000" />
+		<meta
+			name="description"
+			content="Entertain your colleagues with amusing sound effects"
+		/>
+		<title>Soundboard</title>
+
+		<script>
+			Object.defineProperty(self, "sb", {
+				writable: false,
+				value: {
+					SOCKET_URL: isDev() ? "ws://localhost:3001/ws" : "",
+					STATIC_ASSETS_URL: isDev() ? "http://localhost:3002" : "",
+					debug: false,
+				},
+			});
+
+			function isDev() {
+				return ["localhost", "127.0.0.1"].includes(
+					new URL(window.location).hostname
+				);
+			}
+		</script>
+
+		<style>
+			*,
+			*::before,
+			*::after {
+				box-sizing: border-box;
+			}
+
+			html {
+				font-family: system-ui, -apple-system, BlinkMacSystemFont, Roboto,
+					Helvetica, Arial, sans-serif;
+			}
+
+			body {
+				margin: 0;
+				padding: 0;
+				background-color: rgb(36, 34, 31);
+			}
+
+			:where(#soundboard) {
+				padding: 1em;
+			}
+
+			sound-board-sounds {
+				--min-size-sound: 150px;
+
+				display: grid;
+				grid-template-columns: repeat(
+					auto-fit,
+					minmax(var(--min-size-sound), 1fr)
+				);
+				grid-auto-rows: auto;
+				gap: 16px;
+			}
+
+			@media screen and (min-width: 768px) {
+				sound-board-sounds {
+					--min-size-sound: 200px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div id="soundboard">
+			<sound-board-socket></sound-board-socket>
+			<sound-board-sounds>
+				<!-- ... <sound-board-sound></sound-board-sound> -->
+			</sound-board-sounds>
+		</div>
+
+		<template id="sound-board-sound-template">
+			<style>
+				*,
+				*::before,
+				*::after {
+					box-sizing: border-box;
+				}
+
+				:host {
+					display: block;
+					position: relative;
+					aspect-ratio: 1 / 1;
+					background-color: black;
+					font-family: monospace;
+					transition: scale ease-in-out 50ms;
+					border: 1px solid #cccccc;
+					border-radius: 4px;
+					transition: outline ease-in-out 150ms;
+					overflow: hidden;
+
+					container-type: inline-size;
+					container-name: sound;
+				}
+
+				:host(:active) {
+					scale: 0.95;
+				}
+
+				figure::after {
+					display: block;
+					content: "";
+					position: absolute;
+					inset: 0;
+					background: linear-gradient(transparent 60%, hwb(0 0% 100% / 0.7));
+				}
+
+				:host(:focus-within) {
+					outline: 3px solid blue;
+					outline-offset: 3px;
+				}
+
+				figure {
+					--gap: 8px;
+					--button-size: 24px;
+
+					display: grid;
+					grid-template-rows: 1fr var(--button-size);
+					grid-template-columns: var(--button-size) 1fr;
+					gap: var(--gap);
+					margin: 0;
+					padding: var(--gap);
+					width: 100%;
+					height: 100%;
+				}
+
+				@container (inline-size > 250px) {
+					figure {
+						--gap: 12px;
+						--button-size: 32px;
+					}
+				}
+
+				:host(:where(:hover, :focus-within, [playing])) img {
+					opacity: 1;
+				}
+
+				button,
+				figcaption,
+				img {
+					grid-area: 1 / 1;
+				}
+
+				img {
+					z-index: 0;
+					object-fit: cover;
+					width: 100%;
+					height: 100%;
+					position: absolute;
+					inset: 0;
+					transition: opacity ease-in-out 200ms;
+				}
+
+				figcaption {
+					z-index: 1;
+					color: white;
+					font-size: 1em;
+					line-height: 1;
+					grid-area: 2/2;
+					display: flex;
+					align-items: center;
+				}
+
+				button {
+					display: flex;
+					z-index: 3;
+					align-self: flex-end;
+					justify-self: flex-start;
+					appearance: none;
+					background: none;
+					border: 0;
+					padding: 0;
+					margin: 0;
+					color: white;
+					grid-area: 2/1;
+					outline: none;
+				}
+
+				button svg {
+					display: block;
+					width: var(--button-size);
+					height: var(--button-size);
+				}
+
+				button::before {
+					display: block;
+					content: "";
+					width: 100%;
+					height: 100%;
+					background-color: transparent;
+					inset: 0;
+					position: absolute;
+					cursor: pointer;
+				}
+			</style>
+			<figure aria-label="Sound effect">
+				<img src="" alt="" />
+				<button type="button">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke-width="1.5"
+						stroke="currentColor"
+						width="32"
+						height="32"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+						/>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="M15.91 11.672a.375.375 0 010 .656l-5.603 3.113a.375.375 0 01-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112z"
+						/>
+					</svg>
+				</button>
+				<figcaption></figcaption>
+			</figure>
+		</template>
+	</body>
+
+	<script type="module">
+		/**
+		 * @typedef {Object} Sound
+		 * @property {string} id
+		 * @property {string} name
+		 * @property {string} audio
+		 * @property {string} thumbnail
+		 */
+
+		/**
+		 * @typedef {Object} State
+		 * @property {Array<SoundBoardSound>} sounds
+		 */
+
+		/**
+		 * @typedef {Object} User
+		 * @property {string} id
+		 * @property {string} name
+		 */
+
+		class SoundBoardStore extends EventTarget {
+			/** @type {State} */
+			state;
+
+			/** @return {State} */
+			get initialState() {
+				return {
+					sounds: [],
+				};
+			}
+
+			constructor() {
+				super();
+
+				const eventTarget = this;
+
+				this.state = new Proxy(this.initialState, {
+					set(target, prop, value, receiver) {
+						Reflect.set(...arguments);
+						eventTarget.#emit("change", {
+							detail: { target, prop, value, receiver },
+							bubbles: true,
+							cancelable: true,
+						});
+						return true;
+					},
+				});
+
+				this.#init();
+			}
+
+			#init() {
+				this.fetchSounds();
+			}
+
+			/** @return {Array<SoundBoardSound>} */
+			async fetchSounds() {
+				/** @type {Array} */
+				const sounds = await (
+					await fetch(`${self.sb.STATIC_ASSETS_URL}/sounds/sounds.json`)
+				).json();
+
+				this.state.sounds = sounds;
+			}
+
+			/**
+			 * @param {"change"} type
+			 * @param {EventListenerOrEventListenerObject} callback
+			 * @param {boolean | AddEventListenerOptions} options
+			 */
+			addEventListener(type, callback, options) {
+				super.addEventListener(...arguments);
+			}
+
+			/**
+			 * @param {"change"} type
+			 * @param {CustomEventInit} data
+			 */
+			#emit(type, data) {
+				this.dispatchEvent(new CustomEvent(type, data));
+			}
+		}
+
+		const store = new SoundBoardStore();
+
+		class SoundBoardSocket extends HTMLElement {
+			/** @type {BroadcastChannel} */
+			channel;
+			/** @type {WebSocket} */
+			socket;
+			/** @type {User} */
+			session;
+
+			constructor() {
+				super();
+				this.channel = new BroadcastChannel("sounds");
+				this.socket = new WebSocket(self.sb.SOCKET_URL);
+			}
+
+			connectedCallback() {
+				this.socket.addEventListener("open", this.#onOpen.bind(this));
+				this.socket.addEventListener("message", this.#onMessage.bind(this));
+				this.channel.addEventListener(
+					"message",
+					this.#onChannelMessage.bind(this)
+				);
+			}
+
+			disconnectedCallback() {
+				this.socket.removeEventListener("open", this.#onOpen.bind(this));
+				this.socket.removeEventListener("message", this.#onMessage.bind(this));
+				this.socket.close();
+				this.channel.removeEventListener(
+					"message",
+					this.#onChannelMessage.bind(this)
+				);
+			}
+
+			/**
+			 * @param {MessageEvent} event
+			 */
+			#onChannelMessage(event) {
+				if (event.data.type === "playsound") {
+					log("SoundBoardSocket:channel:message:playsound", {
+						event,
+					});
+
+					this.#emit("sound", { sound: event.data.sound });
+				}
+			}
+
+			/**
+			 * @param {Event} event
+			 */
+			#onOpen(event) {
+				// this.#emit("adduser", { name: localStorage.getItem("username") });
+			}
+
+			/**
+			 * @param {MessageEvent} event
+			 */
+			#onMessage(event) {
+				log("socket:onmessage", { event });
+
+				const data = JSON.parse(event.data);
+
+				if (data.type === "userlogin") {
+					this.session = data.user;
+
+					log("SoundBoardSocket:message:userlogin", {
+						user: data.user,
+						session: this.session,
+					});
+				}
+
+				if (data.type === "sound") {
+					log("socket:onmessage:sound", { data });
+
+					const id = data.user.id;
+
+					if (!!id && !!this.session.id && id !== this.session.id) {
+						this.channel.postMessage({
+							type: "playsoundremote",
+							sound: data.sound,
+							user: data.user,
+						});
+					}
+				}
+			}
+
+			/**
+			 * @param {string} type
+			 * @param {Record<string, any>} data
+			 */
+			#emit(type, data) {
+				if (this.socket.readyState === WebSocket.OPEN) {
+					this.socket.send(
+						JSON.stringify({
+							type,
+							...data,
+						})
+					);
+				} else {
+					throw new Error(
+						"Unable to emit event. Invalid WebSocket readyState",
+						this.socket
+					);
+				}
+			}
+		}
+
+		class SoundBoardSounds extends HTMLElement {
+			/** @type {Array<SoundBoardSound>} */
+			sounds = [];
+			/** @type {BroadcastChannel} */
+			channel;
+
+			constructor() {
+				super();
+				this.channel = new BroadcastChannel("sounds");
+				this.attachShadow({ mode: "open" });
+			}
+
+			connectedCallback() {
+				const handler = ({ detail }) => {
+					if (detail.prop === "sounds") {
+						this.sounds = detail.value.map((sound) => {
+							const audio = createAssetUrl(sound.audio.fileName, "sounds");
+							const thumbnail = createAssetUrl(sound.image.fileName, "images");
+
+							return new SoundBoardSound({
+								id: sound.id,
+								name: sound.name,
+								audio,
+								thumbnail,
+							});
+						});
+
+						this.shadowRoot.append(...this.sounds);
+					}
+				};
+
+				store.addEventListener("change", handler);
+
+				this.channel.addEventListener("message", (event) => {
+					if (event.data.type === "playsoundremote") {
+						log("SoundBoardSounds:channel:message:playsoundremote", {
+							event,
+						});
+
+						this.play(event.data.sound.id);
+					}
+				});
+			}
+
+			/**
+			 * @param {Sound["id"]} id
+			 */
+			play(id) {
+				this.sounds.forEach((sound) => {
+					if (sound instanceof SoundBoardSound && sound.id === id) {
+						sound.play();
+					}
+				});
+			}
+		}
+
+		class SoundBoardSound extends HTMLElement {
+			/** @type {BroadcastChannel} */
+			channel;
+
+			set id(value) {
+				this.setAttribute("id", value);
+			}
+
+			get id() {
+				return this.getAttribute("id");
+			}
+
+			set name(value) {
+				this.setAttribute("name", value);
+			}
+
+			get name() {
+				return this.getAttribute("name");
+			}
+
+			set audio(value) {
+				this.setAttribute("audio", value);
+			}
+
+			get audio() {
+				return this.getAttribute("audio");
+			}
+
+			set thumbnail(value) {
+				this.setAttribute("thumbnail", value);
+			}
+
+			get thumbnail() {
+				return this.getAttribute("thumbnail");
+			}
+
+			get playing() {
+				return this.dataset.playing;
+			}
+
+			set playing(value) {
+				const isPlaying = Boolean(value);
+				if (isPlaying) {
+					this.setAttribute("playing", "");
+				} else {
+					this.removeAttribute("playing");
+				}
+			}
+
+			get playing() {
+				return this.hasAttribute("playing");
+			}
+
+			static get template() {
+				return document.getElementById("sound-board-sound-template").content;
+			}
+
+			/**
+			 * @param {Sound} props
+			 */
+			constructor({ id, name, audio, thumbnail } = {}) {
+				super();
+
+				this.id = id;
+				this.name = name;
+				this.audio = audio;
+				this.thumbnail = thumbnail;
+
+				this.channel = new BroadcastChannel("sounds");
+
+				const shadow = this.attachShadow({ mode: "open" });
+				shadow.appendChild(this.constructor.template.cloneNode(true));
+			}
+
+			connectedCallback() {
+				const button = this.shadowRoot.querySelector("button");
+				const thumbnail = this.shadowRoot.querySelector("img");
+				const caption = this.shadowRoot.querySelector("figcaption");
+
+				thumbnail.setAttribute("src", this.thumbnail);
+				caption.textContent = this.name;
+
+				button.addEventListener("click", this.#onButtonClick.bind(this));
+			}
+
+			disconnectedCallback() {
+				const button = this.shadowRoot.querySelector("button");
+				button.removeEventListener("click", this.#onButtonClick.bind(this));
+			}
+
+			/**
+			 * @param {MouseEvent} event
+			 */
+			#onButtonClick(event) {
+				this.play({ broadcast: true });
+			}
+
+			get sound() {
+				return {
+					id: this.id,
+					name: this.name,
+					audio: this.audio,
+					thumbnail: this.thumbnail,
+				};
+			}
+
+			play({ broadcast = false } = {}) {
+				try {
+					this.playing = true;
+
+					log("SoundBoardSound:play", {
+						sound: this.sound,
+					});
+
+					// NOTE: Important guard to prevent infinite loops
+					if (broadcast === true) {
+						log("SoundBoardSound:play:broadcast");
+
+						this.channel.postMessage({ type: "playsound", sound: this.sound });
+					}
+
+					const audio = new Audio(this.audio);
+					audio.currentTime = 0;
+					audio.play();
+					audio.onended = () => {
+						this.playing = false;
+					};
+				} catch {
+					throw new Error("Unable to play sound", this.audio);
+				}
+			}
+		}
+
+		customElements.define("sound-board-socket", SoundBoardSocket);
+		customElements.define("sound-board-sounds", SoundBoardSounds);
+		customElements.define("sound-board-sound", SoundBoardSound);
+
+		/* Utils */
+
+		function createAssetUrl(fileName, dir) {
+			return new URL(
+				fileName,
+				`${window.sb.STATIC_ASSETS_URL}/${dir}/`
+			).toString();
+		}
+
+		function log(...args) {
+			if (window.sb.debug === true) {
+				console.log(...args);
+			}
+		}
+	</script>
+</html>

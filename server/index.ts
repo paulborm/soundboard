@@ -97,19 +97,19 @@ function channelHandler(event: MessageEvent) {
     });
   }
 
-  if (event.type === "message") {
-    if (data.type === "adduser") {
-      store.users.forEach((_, ws) => {
-        ws.send(
-          JSON.stringify({
-            type: "userjoined",
-            user: data.user,
-            users: Array.from(store.users.values()),
-          }),
-        );
-      });
-    }
+  if (event.type === "open") {
+    store.users.forEach((_, ws) => {
+      ws.send(
+        JSON.stringify({
+          type: "userjoined",
+          user: data.user,
+          users: Array.from(store.users.values()),
+        }),
+      );
+    });
+  }
 
+  if (event.type === "message") {
     if (data.type === "sound") {
       store.users.forEach((_, ws) => {
         ws.send(
@@ -117,30 +117,6 @@ function channelHandler(event: MessageEvent) {
             type: "sound",
             sound: data.sound,
             user: data.user,
-          }),
-        );
-      });
-    }
-
-    if (data.type === "updateuser") {
-      const { username, user } = data;
-
-      if (
-        !username ||
-        username.length <= 0 ||
-        username.length > 46 ||
-        typeof username !== "string"
-      ) {
-        return;
-      }
-
-      const updatedUser = { ...user, name: username };
-
-      store.users.forEach((_, ws) => {
-        ws.send(
-          JSON.stringify({
-            type: "userupdated",
-            user: updatedUser,
           }),
         );
       });
@@ -161,34 +137,29 @@ async function handler(request: Request) {
 
     socket.addEventListener("open", (event) => {
       console.log("open", event);
+
+      const user = store.addUser(
+        socket,
+        new User(),
+      );
+
+      console.log("adduser", user);
+
+      socket.send(
+        JSON.stringify({
+          type: "userlogin",
+          user,
+          users: Array.from(store.users.values()),
+        }),
+      );
+
+      channelHandler(
+        new MessageEvent("open", { data: JSON.stringify(user) }),
+      );
     });
 
     socket.addEventListener("message", (event) => {
       const data = JSON.parse(event.data);
-
-      if (data.type === "adduser") {
-        const user = store.addUser(
-          socket,
-          new User(data.name),
-        );
-
-        console.log("adduser", user);
-
-        socket.send(
-          JSON.stringify({
-            type: "userlogin",
-            user,
-            users: Array.from(store.users.values()),
-          }),
-        );
-
-        data.user = user;
-      }
-
-      if (data.type === "updateuser") {
-        const user = store.getUser(socket);
-        data.user = user;
-      }
 
       if (data.type === "sound") {
         const user = store.getUser(socket);
