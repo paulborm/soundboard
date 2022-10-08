@@ -62,24 +62,6 @@
 				display: flex;
 				flex-direction: row-reverse;
 			}
-
-			sound-board-sounds {
-				--min-size-sound: 150px;
-
-				display: grid;
-				grid-template-columns: repeat(
-					auto-fit,
-					minmax(var(--min-size-sound), 1fr)
-				);
-				grid-auto-rows: auto;
-				gap: var(--gap);
-			}
-
-			@media screen and (min-width: 768px) {
-				sound-board-sounds {
-					--min-size-sound: 200px;
-				}
-			}
 		</style>
 	</head>
 	<body>
@@ -465,6 +447,27 @@
 			}
 		}
 
+		const soundsStyleSheet = new CSSStyleSheet();
+		soundsStyleSheet.replaceSync(`
+		:host {
+			--min-size-sound: 150px;
+
+			display: grid;
+			grid-template-columns: repeat(
+				auto-fit,
+				minmax(var(--min-size-sound), 1fr)
+			);
+			grid-auto-rows: auto;
+			gap: var(--gap);
+		}
+
+		@media screen and (min-width: 768px) {
+			:host {
+				--min-size-sound: 200px;
+			}
+		}
+		`);
+
 		class SoundBoardSounds extends HTMLElement {
 			/** @type {Array<SoundBoardSound>} */
 			sounds = [];
@@ -472,6 +475,7 @@
 			constructor() {
 				super();
 				this.attachShadow({ mode: "open" });
+				this.shadowRoot.adoptedStyleSheets = [soundsStyleSheet];
 			}
 
 			connectedCallback() {
