@@ -1,10 +1,11 @@
 # Real-Time Soundboard
 
-* No dependencies
-* No build tools
-* Uses Web APIs like `WebSocket`, `Proxy`,`EventTarget` and web components with shadow DOM
-* Uses CSS container queries
-* Uses Deno as a backend
+- No dependencies
+- No build tools
+- Uses Web APIs like `WebSocket`, `Proxy`,`EventTarget`
+- Uses custom elements, web components and shadow DOM
+- Uses CSS container queries
+- Uses Deno as a backend
 
 ```
 # The very basic frontend code. The whole application lives in the index.html
