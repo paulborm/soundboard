@@ -75,12 +75,12 @@
 		</style>
 	</head>
 	<body>
-		<div id="soundboard">
+		<sound-board>
 			<sound-board-socket></sound-board-socket>
 			<sound-board-sounds>
 				<!-- ... <sound-board-sound></sound-board-sound> -->
 			</sound-board-sounds>
-		</div>
+		</sound-board>
 
 		<template id="sound-board-sound-template">
 			<style>
@@ -320,9 +320,55 @@
 
 		const store = new SoundBoardStore();
 
+		class SoundBoard extends HTMLElement {
+			get sounds() {
+				return [...this.childNodes].find(
+					(child) => child instanceof SoundBoardSounds
+				);
+			}
+
+			get socket() {
+				return [...this.childNodes].find(
+					(child) => child instanceof SoundBoardSocket
+				);
+			}
+
+			constructor() {
+				super();
+			}
+
+			connectedCallback() {
+				store.addEventListener("change", this.#onStateChange.bind(this));
+				this.addEventListener("playing", this.#handler.bind(this));
+				this.addEventListener("socket:sound", this.#handler.bind(this));
+			}
+
+			disconnectedCallback() {
+				this.removeEventListener("playing", this.#handler.bind(this));
+				this.removeEventListener("socket:sound", this.#handler.bind(this));
+			}
+
+			#handler(event) {
+				event.stopPropagation();
+
+				if (event.type === "playing") {
+					this.socket.emit("sound", { sound: event.detail });
+				}
+
+				if (event.type === "socket:sound") {
+					this.sounds.play(event.detail.sound.id);
+				}
+			}
+
+			#onStateChange(event) {
+				const { detail } = event;
+				if (detail.prop === "sounds") {
+					this.sounds.add(detail.value);
+				}
+			}
+		}
+
 		class SoundBoardSocket extends HTMLElement {
-			/** @type {BroadcastChannel} */
-			channel;
 			/** @type {WebSocket} */
 			socket;
 			/** @type {User} */
@@ -330,47 +376,16 @@
 
 			constructor() {
 				super();
-				this.channel = new BroadcastChannel("sounds");
 				this.socket = new WebSocket(self.sb.SOCKET_URL);
 			}
 
 			connectedCallback() {
-				this.socket.addEventListener("open", this.#onOpen.bind(this));
 				this.socket.addEventListener("message", this.#onMessage.bind(this));
-				this.channel.addEventListener(
-					"message",
-					this.#onChannelMessage.bind(this)
-				);
 			}
 
 			disconnectedCallback() {
-				this.socket.removeEventListener("open", this.#onOpen.bind(this));
 				this.socket.removeEventListener("message", this.#onMessage.bind(this));
 				this.socket.close();
-				this.channel.removeEventListener(
-					"message",
-					this.#onChannelMessage.bind(this)
-				);
-			}
-
-			/**
-			 * @param {MessageEvent} event
-			 */
-			#onChannelMessage(event) {
-				if (event.data.type === "playsound") {
-					log("SoundBoardSocket:channel:message:playsound", {
-						event,
-					});
-
-					this.#emit("sound", { sound: event.data.sound });
-				}
-			}
-
-			/**
-			 * @param {Event} event
-			 */
-			#onOpen(event) {
-				// this.#emit("adduser", { name: localStorage.getItem("username") });
 			}
 
 			/**
@@ -396,11 +411,16 @@
 					const id = data.user.id;
 
 					if (!!id && !!this.session.id && id !== this.session.id) {
-						this.channel.postMessage({
-							type: "playsoundremote",
-							sound: data.sound,
-							user: data.user,
-						});
+						this.dispatchEvent(
+							new CustomEvent("socket:sound", {
+								detail: {
+									sound: data.sound,
+									user: data.user,
+								},
+								bubbles: true,
+								composed: true,
+							})
+						);
 					}
 				}
 			}
@@ -409,7 +429,7 @@
 			 * @param {string} type
 			 * @param {Record<string, any>} data
 			 */
-			#emit(type, data) {
+			emit(type, data) {
 				if (this.socket.readyState === WebSocket.OPEN) {
 					this.socket.send(
 						JSON.stringify({
@@ -429,45 +449,41 @@
 		class SoundBoardSounds extends HTMLElement {
 			/** @type {Array<SoundBoardSound>} */
 			sounds = [];
-			/** @type {BroadcastChannel} */
-			channel;
 
 			constructor() {
 				super();
-				this.channel = new BroadcastChannel("sounds");
 				this.attachShadow({ mode: "open" });
 			}
 
 			connectedCallback() {
-				const handler = ({ detail }) => {
-					if (detail.prop === "sounds") {
-						this.sounds = detail.value.map((sound) => {
-							const audio = createAssetUrl(sound.audio.fileName, "sounds");
-							const thumbnail = createAssetUrl(sound.image.fileName, "images");
+				store.addEventListener("change", this.#onStateChange.bind(this));
+			}
 
-							return new SoundBoardSound({
-								id: sound.id,
-								name: sound.name,
-								audio,
-								thumbnail,
-							});
-						});
+			disconnectedCallback() {
+				store.removeEventListener("change", this.#onStateChange.bind(this));
+			}
 
-						this.shadowRoot.append(...this.sounds);
-					}
-				};
+			#onStateChange({ detail }) {
+				if (detail.prop === "sounds") {
+					this.add(detail.value);
+				}
+			}
 
-				store.addEventListener("change", handler);
+			/**
+			 * @param {Sound[]} sounds
+			 */
+			add(sounds) {
+				this.sounds = sounds.map(
+					(sound) =>
+						new SoundBoardSound({
+							id: sound.id,
+							name: sound.name,
+							audio: createAssetUrl(sound.audio.fileName, "sounds"),
+							thumbnail: createAssetUrl(sound.image.fileName, "images"),
+						})
+				);
 
-				this.channel.addEventListener("message", (event) => {
-					if (event.data.type === "playsoundremote") {
-						log("SoundBoardSounds:channel:message:playsoundremote", {
-							event,
-						});
-
-						this.play(event.data.sound.id);
-					}
-				});
+				this.shadowRoot.append(...this.sounds);
 			}
 
 			/**
@@ -483,9 +499,6 @@
 		}
 
 		class SoundBoardSound extends HTMLElement {
-			/** @type {BroadcastChannel} */
-			channel;
-
 			set id(value) {
 				this.setAttribute("id", value);
 			}
@@ -550,8 +563,6 @@
 				this.audio = audio;
 				this.thumbnail = thumbnail;
 
-				this.channel = new BroadcastChannel("sounds");
-
 				const shadow = this.attachShadow({ mode: "open" });
 				shadow.appendChild(this.constructor.template.cloneNode(true));
 			}
@@ -601,7 +612,13 @@
 					if (broadcast === true) {
 						log("SoundBoardSound:play:broadcast");
 
-						this.channel.postMessage({ type: "playsound", sound: this.sound });
+						this.dispatchEvent(
+							new CustomEvent("playing", {
+								detail: this.sound,
+								bubbles: true,
+								composed: true,
+							})
+						);
 					}
 
 					const audio = new Audio(this.audio);
@@ -616,6 +633,7 @@
 			}
 		}
 
+		customElements.define("sound-board", SoundBoard);
 		customElements.define("sound-board-socket", SoundBoardSocket);
 		customElements.define("sound-board-sounds", SoundBoardSounds);
 		customElements.define("sound-board-sound", SoundBoardSound);
