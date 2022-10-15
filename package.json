@@ -1,0 +1,13 @@
+{
+	"name": "soundboard",
+	"version": "1.0.0",
+	"scripts": {
+		"start:client": "web-dev-server --open --root-dir ./client --watch --port 8000",
+		"start:static": "web-dev-server --root-dir ./static --port 3002",
+		"start:server": "deno run --allow-read --allow-env --allow-net --unstable ./server/index.ts"
+	},
+	"license": "UNLICENSED",
+	"devDependencies": {
+		"@web/dev-server": "0.1.34"
+	}
+}
