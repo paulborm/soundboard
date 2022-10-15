@@ -1,0 +1,25 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "soundboard",
+			"dependsOrder": "parallel",
+			"dependsOn": ["npm-start-server", "npm-serve-static", "npm-serve-client"]
+		},
+		{
+			"type": "npm",
+			"script": "start:server",
+			"label": "npm-start-server"
+		},
+		{
+			"type": "npm",
+			"script": "start:static",
+			"label": "npm-serve-static"
+		},
+		{
+			"type": "npm",
+			"script": "start:client",
+			"label": "npm-serve-client"
+		}
+	]
+}

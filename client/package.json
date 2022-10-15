@@ -1,0 +1,7 @@
+{
+	"name": "client",
+	"version": "1.0.0",
+	"scripts": {
+		"serve": "web-dev-server --open --watch --port 8000"
+	}
+}

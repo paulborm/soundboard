@@ -1,0 +1,7 @@
+{
+	"name": "client",
+	"version": "1.0.0",
+	"scripts": {
+		"start": "web-dev-server --port 3002"
+	}
+}

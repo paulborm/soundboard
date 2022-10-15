@@ -1,0 +1,7 @@
+{
+	"name": "client",
+	"version": "1.0.0",
+	"scripts": {
+		"start": "deno run --allow-read --allow-env --allow-net --unstable ./index.ts"
+	}
+}
