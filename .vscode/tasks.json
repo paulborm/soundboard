@@ -2,7 +2,7 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "start-soundboard",
+			"label": "soundboard",
 			"dependsOrder": "parallel",
 			"dependsOn": ["npm-start-server", "npm-serve-static", "npm-serve-client"]
 		},
