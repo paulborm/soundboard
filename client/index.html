@@ -478,20 +478,6 @@
 				this.shadowRoot.adoptedStyleSheets = [soundsStyleSheet];
 			}
 
-			connectedCallback() {
-				store.addEventListener("change", this.#onStateChange.bind(this));
-			}
-
-			disconnectedCallback() {
-				store.removeEventListener("change", this.#onStateChange.bind(this));
-			}
-
-			#onStateChange({ detail }) {
-				if (detail.prop === "sounds") {
-					this.add(detail.value);
-				}
-			}
-
 			/**
 			 * @param {Sound[]} sounds
 			 */
