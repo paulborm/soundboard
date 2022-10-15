@@ -2,8 +2,8 @@
 	"name": "soundboard",
 	"version": "1.0.0",
 	"scripts": {
-		"start:client": "cd ./client && npm serve",
-		"start:static": "cd ./static && npm serve",
+		"start:client": "cd ./client && npm run serve",
+		"start:static": "cd ./static && npm run serve",
 		"start:server": "cd ./server && npm start"
 	},
 	"license": "UNLICENSED",
