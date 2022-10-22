@@ -82,6 +82,28 @@
 			</a>
 		</footer>
 
+		<template id="sound-board-template">
+			<style>
+				:host {
+					--min-size-sound: 150px;
+
+					display: grid;
+					grid-template-columns: repeat(
+						auto-fit,
+						minmax(var(--min-size-sound), 1fr)
+					);
+					grid-auto-rows: auto;
+					gap: var(--gap);
+				}
+
+				@media screen and (min-width: 768px) {
+					:host {
+						--min-size-sound: 200px;
+					}
+				}
+			</style>
+		</template>
+
 		<template id="sound-board-sound-template">
 			<style>
 				*,
@@ -447,35 +469,17 @@
 			}
 		}
 
-		const soundsStyleSheet = new CSSStyleSheet();
-		soundsStyleSheet.replaceSync(`
-		:host {
-			--min-size-sound: 150px;
-
-			display: grid;
-			grid-template-columns: repeat(
-				auto-fit,
-				minmax(var(--min-size-sound), 1fr)
-			);
-			grid-auto-rows: auto;
-			gap: var(--gap);
-		}
-
-		@media screen and (min-width: 768px) {
-			:host {
-				--min-size-sound: 200px;
-			}
-		}
-		`);
-
 		class SoundBoardSounds extends HTMLElement {
 			/** @type {Array<SoundBoardSound>} */
 			sounds = [];
 
 			constructor() {
 				super();
-				this.attachShadow({ mode: "open" });
-				this.shadowRoot.adoptedStyleSheets = [soundsStyleSheet];
+				const shadow = this.attachShadow({ mode: "open" });
+				/** @type {HTMLTemplateElement} */
+				const template = document.getElementById("sound-board-template");
+				shadow.innerHTML = "";
+				shadow.appendChild(template.content.cloneNode(true));
 			}
 
 			/**
@@ -573,6 +577,7 @@
 				this.thumbnail = thumbnail;
 
 				const shadow = this.attachShadow({ mode: "open" });
+				shadow.innerHTML = "";
 				shadow.appendChild(this.constructor.template.cloneNode(true));
 			}
 
