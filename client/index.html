@@ -52,12 +52,17 @@
 			}
 
 			body {
-				display: grid;
-				grid-auto-rows: auto;
+				display: flex;
+				flex-direction: column;
 				gap: 2rem;
+				min-height: 100dvh;
 				margin: 0;
 				padding: var(--gap);
 				background-color: rgb(36, 34, 31);
+			}
+
+			sound-board {
+				flex-grow: 1;
 			}
 
 			footer {
