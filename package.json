@@ -8,6 +8,7 @@
 	},
 	"license": "UNLICENSED",
 	"devDependencies": {
+		"@koa/cors": "4.0.0",
 		"@web/dev-server": "0.1.34"
 	}
 }
